@@ -1,12 +1,21 @@
-//DOM
+// DOM Variables
 const resultEl = document.getElementById("result");
-const lenghtEl = document.getElementById("length");
+const lengthEl = document.getElementById("length");
 const uppercaseEl = document.getElementById("uppercase");
 const lowercaseEl = document.getElementById("lowercase");
 const numbersEl = document.getElementById("numbers");
 const symbolsEl = document.getElementById("symbols");
 const generateEl = document.getElementById("generate");
 const clipboardEl = document.getElementById("clipboard");
+
+// Functions
+const getRandomLower = () => String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+const getRandomUpper = () => String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+const getRandomNumber = () => String.fromCharCode(Math.floor(Math.random() * 10) + 48);
+const getRandomSymbol = () => {
+  const symbols = "!@#$%^&*(){}[]=<>/,.";
+  return symbols[Math.floor(Math.random() * symbols.length)];
+};
 
 const randomFunc = {
   lower: getRandomLower,
@@ -15,8 +24,28 @@ const randomFunc = {
   symbol: getRandomSymbol,
 };
 
-generateEl.addEventListener("click", (e) => {
-  const length = +lenghtEl.value;
+const generatePassword = (lower, upper, number, symbol, length) => {
+  let generatedPassword = "";
+  const typesCount = lower + upper + number + symbol;
+  const typesArr = [{ lower }, { upper }, { number }, { symbol }].filter(
+    (item) => Object.values(item)[0]
+  );
+
+  if (typesCount === 0) return "";
+
+  for (let i = 0; i < length; i += typesCount) {
+    typesArr.forEach((type) => {
+      const funcName = Object.keys(type)[0];
+      generatedPassword += randomFunc[funcName]();
+    });
+  }
+
+  return generatedPassword.slice(0, length);
+};
+
+// Events
+generateEl.addEventListener("click", () => {
+  const length = +lengthEl.value;
   const hasLower = lowercaseEl.checked;
   const hasUpper = uppercaseEl.checked;
   const hasNumber = numbersEl.checked;
@@ -31,57 +60,14 @@ generateEl.addEventListener("click", (e) => {
   );
 });
 
-clipboardEl.addEventListener("click", (e) => {
-  const textarea = document.createElement("textarea");
+clipboardEl.addEventListener("click", async () => {
   const password = resultEl.innerText;
-  if (!password) {
-    return;
+  if (!password) return;
+
+  try {
+    await navigator.clipboard.writeText(password);
+    swal("Copiado con éxito", "El password ha sido copiado al portapapeles", "success");
+  } catch (error) {
+    console.error("Error al copiar al portapapeles: ", error);
   }
-  textarea.value = password;
-  document.body.appendChild(textarea);
-  textarea.select();
-  document.execCommand("copy");
-  textarea.remove();
-  swal(
-    "Copiado con exito",
-    "El password ha sido copiado al portapapeles",
-    "success"
-  );
 });
-
-//Funciones
-function getRandomLower() {
-  return String.fromCharCode(Math.floor(Math.random() * 26) + 97);
-}
-
-function getRandomUpper() {
-  return String.fromCharCode(Math.floor(Math.random() * 26) + 65);
-}
-
-function getRandomNumber() {
-  return String.fromCharCode(Math.floor(Math.random() * 10) + 48);
-}
-
-function getRandomSymbol() {
-  const symbols = "!@#$%^&*(){}[]=<>/,.";
-  return symbols[Math.floor(Math.random() * symbols.length)];
-}
-
-function generatePassword(lower, upper, number, symbol, length) {
-  let generatedPassword = "";
-  const typesCount = lower + upper + number + symbol;
-  const typesArr = [{ lower }, { upper }, { number }, { symbol }].filter(
-    (item) => Object.values(item)[0]
-  );
-  if (typesCount === 0) {
-    return "";
-  }
-  for (let i = 0; i < length; i += typesCount) {
-    typesArr.forEach((type) => {
-      const funcName = Object.keys(type)[0];
-      generatedPassword += randomFunc[funcName]();
-    });
-  }
-  const finalPassword = generatedPassword.slice(0, length);
-  return finalPassword;
-}

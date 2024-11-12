@@ -1,8 +1,8 @@
-# Generador De Passwords
+# Password Generator
 
 ## Descripción
 
-Código de la aplicacion generador de passwords hecha en html, css y javascript.
+Código de la aplicación Password Generator hecha en html, css y javascript.
 
 ---
 
@@ -18,7 +18,7 @@ Código de la aplicacion generador de passwords hecha en html, css y javascript.
 
 ## Enlace A La Aplicación
 
-- [Generador de passwords](https://password-generator-web-page.netlify.app/)
+- [Password Generator](https://password-generator-web-page.netlify.app/)
 
 ---
 
