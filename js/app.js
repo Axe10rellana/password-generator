@@ -66,7 +66,11 @@ clipboardEl.addEventListener("click", async () => {
 
   try {
     await navigator.clipboard.writeText(password);
-    swal("Copiado con éxito", "El password ha sido copiado al portapapeles", "success");
+    Swal.fire({
+      title: "Copiado con éxito",
+      text: "El password ha sido copiado al portapapeles",
+      icon: "success"
+    });
   } catch (error) {
     console.error("Error al copiar al portapapeles: ", error);
   }
